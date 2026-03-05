@@ -1,0 +1,26 @@
+﻿title: "罗力恒的博客"
+description: "记录学习、笔记与项目。"
+url: ""
+baseurl: ""
+
+author:
+  name: "罗力恒"
+  email: ""
+
+timezone: Asia/Shanghai
+lang: zh-CN
+
+theme: minima
+
+plugins:
+  - jekyll-feed
+
+permalink: /:categories/:title/
+
+header_pages:
+  - about.md
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
