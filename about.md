@@ -1,9 +1,6 @@
 ﻿---
-layout: page
-title: "个人介绍"
-permalink: /about/
+title: "旧版关于页（占位）"
+permalink: /about-old/
 ---
 
-这是一页独立的个人介绍页面。
-
-（内容后续再填）
+此文件仅为兼容占位，请使用 /about/ 页面。
