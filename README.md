@@ -35,8 +35,9 @@ This repo includes a pre-commit workflow that syncs markdown files from `_writin
 
 - Write drafts in `_writing/*.md`
 - On `git commit`, hook runs `python tools/sync_posts.py`
-- The script writes/updates `_posts/YYYY-MM-DD-title.md`
+- The script writes/updates `_posts/YYYY-MM-DD-title.md` and then consumes (deletes) the `_writing` source file
 - If missing, `date` is generated from file modified time
+- After sync, posts should be edited in `_posts/` only
 
 Setup once per clone:
 

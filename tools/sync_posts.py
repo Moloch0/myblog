@@ -19,6 +19,9 @@ DEFAULT_CONFIG = {
     "target_dir": "_posts",
     "timezone": "+08:00",
     "pattern": "*.md",
+    "track_sync_source": False,
+    "delete_source_after_sync": True,
+    "remove_stale_synced_posts": False,
 }
 FRONT_MATTER_RE = re.compile(r"\A---\n(.*?)\n---\n?", re.DOTALL)
 SYNC_SOURCE_RE = re.compile(r'^sync_source:\s*["\']?(.*?)["\']?\s*$', re.MULTILINE)
@@ -109,13 +112,19 @@ def format_jekyll_date(dt: datetime) -> str:
 
 
 def ensure_front_matter(
-    content: str, title: str, date_str: str, sync_source: str
+    content: str,
+    title: str,
+    date_str: str,
+    sync_source: str,
+    track_sync_source: bool,
 ) -> str:
     _, front, body = parse_front_matter(content)
     escaped_title = title.replace('"', '\\"')
     sync_line = f'sync_source: "{sync_source}"'
     if front == "":
-        new_front = [f'title: "{escaped_title}"', f"date: {date_str}", sync_line]
+        new_front = [f'title: "{escaped_title}"', f"date: {date_str}"]
+        if track_sync_source:
+            new_front.append(sync_line)
         return f"---\n" + "\n".join(new_front) + f"\n---\n\n{body.lstrip()}"
 
     lines = front.splitlines()
@@ -124,7 +133,8 @@ def ensure_front_matter(
         filtered.insert(0, f'title: "{escaped_title}"')
     if not any(line.startswith("date:") for line in filtered):
         filtered.append(f"date: {date_str}")
-    filtered.append(sync_line)
+    if track_sync_source:
+        filtered.append(sync_line)
     new_front = "\n".join(filtered)
     return f"---\n{new_front}\n---\n{body}"
 
@@ -160,6 +170,9 @@ def main() -> int:
     source_dir = (REPO_ROOT / config["source_dir"]).resolve()
     target_dir = (REPO_ROOT / config["target_dir"]).resolve()
     pattern = config["pattern"]
+    track_sync_source = bool(config.get("track_sync_source", False))
+    delete_source_after_sync = bool(config.get("delete_source_after_sync", True))
+    remove_stale_synced_posts = bool(config.get("remove_stale_synced_posts", False))
 
     if not source_dir.exists():
         print(f"[sync-posts] skip: source dir not found: {source_dir}")
@@ -193,12 +206,19 @@ def main() -> int:
         sync_source = source.relative_to(REPO_ROOT).as_posix()
         target_path = target_dir / target_name
 
-        new_content = ensure_front_matter(raw, title, date_str, sync_source)
+        new_content = ensure_front_matter(
+            raw,
+            title,
+            date_str,
+            sync_source,
+            track_sync_source=track_sync_source,
+        )
 
-        existing = find_existing_synced_file(target_dir, sync_source)
-        if existing and existing != target_path:
-            existing.unlink()
-            changed += 1
+        if track_sync_source:
+            existing = find_existing_synced_file(target_dir, sync_source)
+            if existing and existing != target_path:
+                existing.unlink()
+                changed += 1
 
         old_content = None
         if target_path.exists():
@@ -209,20 +229,26 @@ def main() -> int:
             changed += 1
             print(f"[sync-posts] updated {target_path.relative_to(REPO_ROOT)}")
 
-    for post in target_dir.glob("*.md"):
-        try:
-            text = post.read_text(encoding="utf-8")
-        except UnicodeDecodeError:
-            continue
-        match = SYNC_SOURCE_RE.search(text)
-        if not match:
-            continue
-        source_ref = match.group(1)
-        source_path = (REPO_ROOT / source_ref).resolve()
-        if not source_path.exists():
-            post.unlink()
+        if delete_source_after_sync:
+            source.unlink()
             changed += 1
-            print(f"[sync-posts] removed stale {post.relative_to(REPO_ROOT)}")
+            print(f"[sync-posts] consumed {source.relative_to(REPO_ROOT)}")
+
+    if track_sync_source and remove_stale_synced_posts:
+        for post in target_dir.glob("*.md"):
+            try:
+                text = post.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                continue
+            match = SYNC_SOURCE_RE.search(text)
+            if not match:
+                continue
+            source_ref = match.group(1)
+            source_path = (REPO_ROOT / source_ref).resolve()
+            if not source_path.exists():
+                post.unlink()
+                changed += 1
+                print(f"[sync-posts] removed stale {post.relative_to(REPO_ROOT)}")
 
     if changed:
         git_add_posts(target_dir)
