@@ -1,5 +1,5 @@
 ﻿---
-title: "时间归档"
+title: "Archive"
 permalink: /archive/
 layout: archive
 ---

@@ -1,10 +1,10 @@
 ﻿---
 layout: home
 author_profile: false
-title: "最近更新"
-excerpt: "持续更新学习笔记、实验记录与项目总结。"
+title: "Recent Posts"
+excerpt: "Long-term notes on research, engineering, and reproducible workflows."
 header:
-  overlay_filter: 0.35
-  overlay_color: "#1e293b"
+  overlay_filter: 0.2
+  overlay_color: "#111827"
   caption: "Moloch0"
 ---

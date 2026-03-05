@@ -1,11 +1,11 @@
 ﻿main:
-  - title: "首页"
+  - title: "Home"
     url: /
-  - title: "归档"
+  - title: "Archive"
     url: /archive/
-  - title: "分类"
+  - title: "Categories"
     url: /categories/
-  - title: "标签"
+  - title: "Tags"
     url: /tags/
-  - title: "个人介绍"
+  - title: "About"
     url: /about/

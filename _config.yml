@@ -1,9 +1,9 @@
-﻿locale: "zh-CN"
-title: "罗力恒的博客"
+﻿locale: "en-US"
+title: "Liheng Luo Blog"
 title_separator: "|"
-subtitle: "记录学习、项目与思考"
-name: "罗力恒"
-description: "个人学习记录、技术笔记与项目日志"
+subtitle: "Research Notes, Projects, and Long-form Learning"
+name: "Liheng Luo"
+description: "Personal research notes, technical writing, and project logs."
 url: "https://moloch0.github.io"
 baseurl: "/myblog"
 repository: "Moloch0/myblog"
@@ -11,7 +11,7 @@ repository: "Moloch0/myblog"
 timezone: Asia/Shanghai
 
 remote_theme: "mmistakes/minimal-mistakes@4.27.3"
-minimal_mistakes_skin: "air"
+minimal_mistakes_skin: "default"
 
 search: true
 breadcrumbs: true
@@ -36,8 +36,8 @@ plugins:
   - jekyll-include-cache
 
 author:
-  name: "罗力恒"
-  bio: "这里记录长期学习与实践。"
+  name: "Liheng Luo"
+  bio: "A lab-style notebook for ideas, experiments, and technical summaries."
   location: "China"
 
 footer:

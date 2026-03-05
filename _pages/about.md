@@ -1,12 +1,12 @@
 ﻿---
-title: "个人介绍"
+title: "About"
 permalink: /about/
 ---
 
-这是一页独立的个人介绍页面（不是主页）。
+This is a standalone profile page (not the homepage).
 
-后续你可以在这里写：
+You can later add:
 
-- 个人背景
-- 研究/工作方向
-- 联系方式
+- Background
+- Research interests
+- Contact details
