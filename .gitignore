@@ -26,6 +26,10 @@ package-lock.json
 _sass/vendors
 assets/js/dist
 
+# Python cache
+__pycache__/
+*.pyc
+
 # local migration temp
 .tmp_chirpy_starter_*
 .backup_posts_*
