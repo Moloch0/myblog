@@ -1,0 +1,6 @@
+{
+  "source_dir": "_writing",
+  "target_dir": "_posts",
+  "timezone": "+08:00",
+  "pattern": "*.md"
+}

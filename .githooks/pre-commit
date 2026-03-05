@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -eu
+
+python tools/sync_posts.py
+git add _posts
