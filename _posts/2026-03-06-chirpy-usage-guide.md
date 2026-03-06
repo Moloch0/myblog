@@ -1,7 +1,7 @@
 ---
 title: "Chirpy 博客使用指南"
 description: "基于 cotes2020/chirpy-starter 的个人博客，从本地写作到 GitHub Pages 部署的完整流程。"
-date: 2026-03-05 00:00:00 +0800
+date: 2026-03-06 00:00:00 +0800
 categories: [blog, guide]
 tags: [chirpy, jekyll, github-pages, pre-commit]
 toc: true
@@ -90,6 +90,8 @@ date: 2026-03-06 21:00:00 +0800
 - `.githooks/pre-commit`
 - `tools/sync_posts.py`
 - `.blog-sync.json`
+
+> 注意：当前仓库在 `.blog-sync.json` 中启用了 `delete_source_after_sync: true`，也就是提交时完成同步后会删除 `_writing/` 下已同步的源文件。这是刻意设计，用于保证后续只在 `_posts/` 维护最终稿。
 
 一次性启用（每次 clone 后执行一次）：
 
