@@ -50,4 +50,5 @@ git config core.hooksPath .githooks
 ## 参考
 
 - 工程导航：`docs/REPO-OPERATIONS.md`
+- Feature 概览（关联文档）：`_writing/FEATURES.md`
 - Chirpy 官方文档：<https://github.com/cotes2020/jekyll-theme-chirpy/wiki>
