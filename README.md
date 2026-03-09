@@ -1,87 +1,53 @@
-# Chirpy Starter
+﻿# myblog
 
-[![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
-[![GitHub license](https://img.shields.io/github/license/cotes2020/chirpy-starter.svg?color=blue)][mit]
+个人博客仓库，基于 `Jekyll + Chirpy`。
 
-When installing the [**Chirpy**][chirpy] theme through [RubyGems.org][gem], Jekyll can only read files in the folders
-`_data`, `_layouts`, `_includes`, `_sass` and `assets`, as well as a small part of options of the `_config.yml` file
-from the theme's gem. If you have ever installed this theme gem, you can use the command
-`bundle info --path jekyll-theme-chirpy` to locate these files.
+## 人类核心标准
 
-The Jekyll team claims that this is to leave the ball in the user’s court, but this also results in users not being
-able to enjoy the out-of-the-box experience when using feature-rich themes.
+唯一核心文档（Single Source of Truth）：
 
-To fully use all the features of **Chirpy**, you need to copy the other critical files from the theme's gem to your
-Jekyll site. The following is a list of targets:
+- `_posts/2026-03-09-config-zh-cn.md`
+- GitHub URL: <https://github.com/Moloch0/myblog/blob/main/_posts/2026-03-09-config-zh-cn.md>
 
-```shell
-.
-├── _config.yml
-├── _plugins
-├── _tabs
-└── index.html
-```
+说明：该文档是“人类标准核心文档”，有且仅有这一个。其他说明文件若与其冲突，以该文档为准。
 
-To save you time, and also in case you lose some files while copying, we extract those files/configurations of the
-latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so that you can start writing in minutes.
+## 仓库结构
 
-## Usage
+- `_posts/`: 已发布文章
+- `_writing/`: 临时写作输入目录（由同步脚本消费）
+- `tools/`: 本地开发与同步脚本
+- `_includes/`, `assets/`: 主题扩展与前端资源
+- `.githooks/`: pre-commit 钩子（自动同步 `_writing`）
+- `docs/`: 工程导航文档（非人类核心标准）
 
-Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
-
-### Local build commands
-
-In some Windows Ruby setups, `bundle exec` may fail unexpectedly.
-Use the project scripts (or `ruby -S`) for local development:
+## 本地开发
 
 ```bash
 bash tools/run.sh
 bash tools/test.sh
 ```
 
-If `bash tools/test.sh` reports `htmlproofer not found`, install the test gems:
+如果 `htmlproofer` 缺失：
 
 ```bash
 bundle config unset without
 bundle install
 ```
 
-You can skip link checking once with:
+## 写作同步流
 
-```bash
-SKIP_HTMLPROOFER=1 bash tools/test.sh
-```
+1. 在 `_writing/*.md` 写稿
+2. `git commit` 触发 `.githooks/pre-commit`
+3. 执行 `python tools/sync_posts.py`
+4. 文章生成到 `_posts/`，源文件按配置删除
 
-## Local Writing Auto-Sync (pre-commit)
-
-This repo includes a pre-commit workflow that syncs markdown files from `_writing/` into Jekyll `_posts/`.
-
-- Write drafts in `_writing/*.md`
-- On `git commit`, hook runs `python tools/sync_posts.py`
-- The script writes/updates `_posts/YYYY-MM-DD-title.md` and then consumes (deletes) the `_writing` source file
-- If missing, `date` is generated from file modified time
-- After sync, posts should be edited in `_posts/` only
-
-Setup once per clone:
+初始化（每个 clone 一次）：
 
 ```bash
 git config core.hooksPath .githooks
 ```
 
-Optional:
+## 参考
 
-- Override writing directory with env var `BLOG_SOURCE_DIR`
-- Tune defaults in `.blog-sync.json`
-
-## Contributing
-
-This repository is automatically updated with new releases from the theme repository. If you encounter any issues or want to contribute to its improvement, please visit the [theme repository][chirpy] to provide feedback.
-
-## License
-
-This work is published under [MIT][mit] License.
-
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
-[CD]: https://en.wikipedia.org/wiki/Continuous_deployment
-[mit]: https://github.com/cotes2020/chirpy-starter/blob/master/LICENSE
+- 工程导航：`docs/REPO-OPERATIONS.md`
+- Chirpy 官方文档：<https://github.com/cotes2020/jekyll-theme-chirpy/wiki>
