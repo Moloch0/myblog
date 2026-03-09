@@ -1,0 +1,78 @@
+<!-- Navigation buttons at the bottom of the post. -->
+
+{% assign previous = site.data.locales[include.lang].post.button.previous %}
+{% assign next = site.data.locales[include.lang].post.button.next %}
+
+{% if page.series %}
+  {% assign series_posts = site.posts | where: "series", page.series | sort: "date" %}
+  {% assign current_idx = -1 %}
+
+  {% for post in series_posts %}
+    {% if post.url == page.url %}
+      {% assign current_idx = forloop.index0 %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {% if current_idx >= 0 %}
+    {% assign series_prev_idx = current_idx | minus: 1 %}
+    {% assign series_next_idx = current_idx | plus: 1 %}
+    {% assign series_prev = series_posts[series_prev_idx] %}
+    {% assign series_next = series_posts[series_next_idx] %}
+
+    <section class="series-navigation mb-4" aria-label="Series Navigation">
+      <div class="text-muted small mb-2">Series: {{ page.series }}</div>
+      <div class="post-navigation d-flex justify-content-between">
+        {% if series_prev %}
+          <a href="{{ site.baseurl }}{{ series_prev.url }}" class="btn btn-outline-secondary" aria-label="Previous in series">
+            <p>{{ series_prev.title }}</p>
+          </a>
+        {% else %}
+          <div class="btn btn-outline-secondary disabled" aria-label="Previous in series">
+            <p>-</p>
+          </div>
+        {% endif %}
+
+        {% if series_next %}
+          <a href="{{ site.baseurl }}{{ series_next.url }}" class="btn btn-outline-secondary" aria-label="Next in series">
+            <p>{{ series_next.title }}</p>
+          </a>
+        {% else %}
+          <div class="btn btn-outline-secondary disabled" aria-label="Next in series">
+            <p>-</p>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+{% endif %}
+
+<nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation">
+  {% if page.previous.url %}
+    <a
+      href="{{ site.baseurl }}{{ page.previous.url }}"
+      class="btn btn-outline-primary"
+      aria-label="{{ previous }}"
+    >
+      <p>{{ page.previous.title }}</p>
+    </a>
+  {% else %}
+    <div class="btn btn-outline-primary disabled" aria-label="{{ previous }}">
+      <p>-</p>
+    </div>
+  {% endif %}
+
+  {% if page.next.url %}
+    <a
+      href="{{ site.baseurl }}{{page.next.url}}"
+      class="btn btn-outline-primary"
+      aria-label="{{ next }}"
+    >
+      <p>{{ page.next.title }}</p>
+    </a>
+  {% else %}
+    <div class="btn btn-outline-primary disabled" aria-label="{{ next }}">
+      <p>-</p>
+    </div>
+  {% endif %}
+</nav>

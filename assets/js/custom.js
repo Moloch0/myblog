@@ -1,11 +1,16 @@
 const LIVE2D_WIDGET_URL =
   'https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@v0.9.0/autoload.js';
-const MEDIUM_ZOOM_URL =
-  'https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js';
-const APLAYER_CSS_URL =
-  'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css';
-const APLAYER_JS_URL =
-  'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js';
+
+function resolveAssetUrl(relativePath) {
+  if (document.currentScript && document.currentScript.src) {
+    return new URL(relativePath, document.currentScript.src).href;
+  }
+  return relativePath;
+}
+
+const MEDIUM_ZOOM_URL = resolveAssetUrl('./lib/medium-zoom/medium-zoom.min.js');
+const APLAYER_CSS_URL = resolveAssetUrl('./lib/aplayer/APlayer.min.css');
+const APLAYER_JS_URL = resolveAssetUrl('./lib/aplayer/APlayer.min.js');
 
 function initLive2D() {
   const script = document.createElement('script');
