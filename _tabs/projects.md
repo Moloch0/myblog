@@ -102,7 +102,7 @@ title: Projects
       <a href="https://github.com/Moloch0/myblog" class="project-link" target="_blank" rel="noopener noreferrer">
         <i class="fab fa-github"></i> Repository
       </a>
-      <a href="/" class="project-link">
+      <a href="{{ '/' | relative_url }}" class="project-link">
         <i class="fas fa-external-link-alt"></i> Live Site
       </a>
     </div>
