@@ -2,7 +2,8 @@
 function initLive2D() {
   // 使用 Live2D Widget 库
   const script = document.createElement('script');
-  script.src = 'https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js';
+  script.src =
+    'https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js';
   document.head.appendChild(script);
 }
 
@@ -35,8 +36,9 @@ function initReadingProgress() {
 function initImageLightbox() {
   // 使用 Medium Zoom 库
   const script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js';
-  script.onload = function() {
+  script.src =
+    'https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js';
+  script.onload = function () {
     mediumZoom('article img', {
       margin: 24,
       background: 'rgba(0, 0, 0, 0.9)',
@@ -63,13 +65,15 @@ function initMusicPlayer() {
   // 加载 APlayer CSS
   const aplcss = document.createElement('link');
   aplcss.rel = 'stylesheet';
-  aplcss.href = 'https://cdn.jsdelivr.net/npm/aplayer@latest/dist/APlayer.min.css';
+  aplcss.href =
+    'https://cdn.jsdelivr.net/npm/aplayer@latest/dist/APlayer.min.css';
   document.head.appendChild(aplcss);
 
   // 加载 APlayer JS
   const aplscript = document.createElement('script');
-  aplscript.src = 'https://cdn.jsdelivr.net/npm/aplayer@latest/dist/APlayer.min.js';
-  aplscript.onload = function() {
+  aplscript.src =
+    'https://cdn.jsdelivr.net/npm/aplayer@latest/dist/APlayer.min.js';
+  aplscript.onload = function () {
     const ap = new APlayer({
       container: document.getElementById('music-player'),
       mini: true,
@@ -87,37 +91,40 @@ function initMusicPlayer() {
           name: 'Komorebi',
           artist: 'm-taku',
           url: 'https://music.163.com/song/media/outer/url?id=1357887232.mp3',
-          cover: 'https://p2.music.126.net/vf7c2GJsuyfSl2AAOvXgJA==/109951163068517608.jpg'
+          cover:
+            'https://p2.music.126.net/vf7c2GJsuyfSl2AAOvXgJA==/109951163068517608.jpg',
         },
         {
           name: 'River Flows In You',
           artist: 'Yiruma',
           url: 'https://music.163.com/song/media/outer/url?id=3935127.mp3',
-          cover: 'https://p1.music.126.net/96zVB0C1A7TsKFHLLbqiOQ==/109951163355414477.jpg'
+          cover:
+            'https://p1.music.126.net/96zVB0C1A7TsKFHLLbqiOQ==/109951163355414477.jpg',
         },
         {
           name: 'Canon in D',
           artist: 'Johann Pachelbel',
           url: 'https://music.163.com/song/media/outer/url?id=2569302.mp3',
-          cover: 'https://p2.music.126.net/X20TUIorq8EUHf-GqI0H7Q==/109951163350891625.jpg'
-        }
-      ]
+          cover:
+            'https://p2.music.126.net/X20TUIorq8EUHf-GqI0H7Q==/109951163350891625.jpg',
+        },
+      ],
     });
   };
   document.head.appendChild(aplscript);
 }
 
 // 页面加载完成后初始化所有功能
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // 初始化 Live2D
   initLive2D();
-  
+
   // 初始化阅读进度条
   initReadingProgress();
-  
+
   // 初始化图片灯箱
   initImageLightbox();
-  
+
   // 初始化音乐播放器（延迟加载避免阻塞页面）
   setTimeout(initMusicPlayer, 1000);
 });
