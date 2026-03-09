@@ -1,7 +1,7 @@
-<!-- 自定义功能增强 -->
+<!-- Custom feature entry -->
 <script defer src="{{ '/assets/js/custom.js' | relative_url }}"></script>
 
-<!-- Live2D 看板娘样式调整 -->
+<!-- Live2D and custom UI styles -->
 <style>
   #waifu {
     position: fixed !important;
@@ -10,22 +10,83 @@
     z-index: 9999 !important;
   }
 
-  /* 移动端隐藏看板娘和音乐播放器 */
   @media (max-width: 768px) {
     #waifu,
-    #music-player {
+    .music-player-shell.is-floating {
       display: none !important;
     }
   }
 
-  /* 音乐播放器样式微调 */
+  .music-player-shell {
+    width: min(100%, 680px);
+    margin: 1rem 0 1.25rem;
+  }
+
+  .music-player-shell.is-floating {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9998;
+    width: 340px;
+    margin: 0;
+  }
+
   #music-player {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-    border-radius: 4px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  #music-player .aplayer {
+    margin: 0;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     overflow: hidden;
   }
 
-  /* 阅读进度条在侧边栏打开时调整 */
+  #music-player .aplayer-body {
+    background: linear-gradient(135deg, rgba(255, 122, 24, 0.14), rgba(255, 227, 122, 0.16));
+  }
+
+  #music-player .aplayer-pic {
+    width: 76px;
+    height: 76px;
+  }
+
+  #music-player .aplayer-info {
+    margin-left: 76px;
+    height: 76px;
+    padding-top: 10px;
+  }
+
+  #music-player .aplayer-title {
+    font-weight: 600;
+  }
+
+  #music-player .aplayer-author {
+    opacity: 0.75;
+  }
+
+  #music-player .aplayer-bar-wrap .aplayer-bar {
+    height: 3px;
+    border-radius: 99px;
+  }
+
+  #music-player .aplayer-list {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  #music-player .aplayer-list ol li {
+    border-top-color: rgba(0, 0, 0, 0.06);
+  }
+
+  #music-player .aplayer-list ol li:hover {
+    background: rgba(255, 122, 24, 0.08);
+  }
+
   #reading-progress-bar {
     transition: all 0.3s ease;
   }
@@ -47,7 +108,7 @@
   body.reading-mode #panel-wrapper,
   body.reading-mode #toc-wrapper,
   body.reading-mode #tail-wrapper,
-  body.reading-mode #music-player,
+  body.reading-mode .music-player-shell.is-floating,
   body.reading-mode #waifu {
     display: none !important;
   }

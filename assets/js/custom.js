@@ -1,5 +1,7 @@
 const LIVE2D_WIDGET_URL =
   "https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@v0.9.0/autoload.js";
+const ENABLE_LIVE2D = false;
+const ENABLE_MUSIC_PLAYER = true;
 
 function resolveAssetUrl(relativePath) {
   if (document.currentScript && document.currentScript.src) {
@@ -12,6 +14,7 @@ const MEDIUM_ZOOM_URL = resolveAssetUrl("./lib/medium-zoom/medium-zoom.min.js");
 const APLAYER_CSS_URL = resolveAssetUrl("./lib/aplayer/APlayer.min.css");
 const APLAYER_JS_URL = resolveAssetUrl("./lib/aplayer/APlayer.min.js");
 const SEARCH_DATA_URL = resolveAssetUrl("./data/search.json");
+const SITE_BASE_PATH = new URL("../../", resolveAssetUrl("./custom.js")).pathname;
 
 function escapeHtml(text) {
   return String(text || "")
@@ -23,6 +26,7 @@ function escapeHtml(text) {
 }
 
 function initLive2D() {
+  if (!ENABLE_LIVE2D) return;
   const script = document.createElement("script");
   script.src = LIVE2D_WIDGET_URL;
   document.head.appendChild(script);
@@ -70,65 +74,139 @@ function initImageLightbox() {
 }
 
 function initMusicPlayer() {
-  if (window.matchMedia("(max-width: 768px)").matches) return;
+  if (!ENABLE_MUSIC_PLAYER) return;
+  const config = getPageMusicConfig();
+  if (!config) return;
 
   const playerContainer = document.createElement("div");
   playerContainer.id = "music-player";
-  playerContainer.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 9998;
-    width: 300px;
-  `;
-  document.body.appendChild(playerContainer);
+  playerContainer.className =
+    config.mode === "floating"
+      ? "music-player-shell is-floating"
+      : "music-player-shell is-embedded";
 
+  if (config.mode === "floating") {
+    if (window.matchMedia("(max-width: 768px)").matches) return;
+    document.body.appendChild(playerContainer);
+  } else {
+    const content = document.querySelector("article .content");
+    if (!content) return;
+    if (config.position === "bottom") {
+      content.appendChild(playerContainer);
+    } else {
+      content.insertBefore(playerContainer, content.firstChild);
+    }
+  }
+
+  ensureAPlayerStylesheet();
+
+  loadAPlayerScript()
+    .then(() => {
+      const player = new APlayer({
+        container: playerContainer,
+        mini: Boolean(config.mini),
+        autoplay: Boolean(config.autoplay),
+        theme: config.theme,
+        loop: config.loop,
+        order: config.order,
+        preload: config.preload,
+        volume: config.volume,
+        mutex: true,
+        listFolded: config.listFolded,
+        listMaxHeight: config.listMaxHeight,
+        audio: config.tracks
+      });
+
+      player.on("error", () => {
+        console.warn("[music-player] Audio resource failed to load.");
+      });
+    })
+    .catch(() => {
+      console.warn("[music-player] Failed to load APlayer script:", APLAYER_JS_URL);
+    });
+}
+
+function ensureAPlayerStylesheet() {
+  if (document.querySelector('link[data-aplayer-style="1"]')) return;
   const aplcss = document.createElement("link");
   aplcss.rel = "stylesheet";
   aplcss.href = APLAYER_CSS_URL;
+  aplcss.dataset.aplayerStyle = "1";
   document.head.appendChild(aplcss);
+}
 
-  const aplscript = document.createElement("script");
-  aplscript.src = APLAYER_JS_URL;
-  aplscript.onload = function () {
-    new APlayer({
-      container: document.getElementById("music-player"),
-      mini: true,
-      autoplay: false,
-      theme: "#667eea",
-      loop: "all",
-      order: "random",
-      preload: "auto",
-      volume: 0.7,
-      mutex: true,
-      listFolded: true,
-      listMaxHeight: 90,
-      audio: [
-        {
-          name: "Komorebi",
-          artist: "m-taku",
-          url: "https://music.163.com/song/media/outer/url?id=1357887232.mp3",
-          cover:
-            "https://p2.music.126.net/vf7c2GJsuyfSl2AAOvXgJA==/109951163068517608.jpg"
-        },
-        {
-          name: "River Flows In You",
-          artist: "Yiruma",
-          url: "https://music.163.com/song/media/outer/url?id=3935127.mp3",
-          cover:
-            "https://p1.music.126.net/96zVB0C1A7TsKFHLLbqiOQ==/109951163355414477.jpg"
-        },
-        {
-          name: "Canon in D",
-          artist: "Johann Pachelbel",
-          url: "https://music.163.com/song/media/outer/url?id=2569302.mp3",
-          cover:
-            "https://p2.music.126.net/X20TUIorq8EUHf-GqI0H7Q==/109951163350891625.jpg"
-        }
-      ]
-    });
-  };
-  document.head.appendChild(aplscript);
+function loadAPlayerScript() {
+  if (window.APlayer) return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-aplayer-script="1"]');
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("APlayer script failed")), {
+        once: true
+      });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = APLAYER_JS_URL;
+    script.dataset.aplayerScript = "1";
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("APlayer script failed"));
+    document.head.appendChild(script);
+  });
+}
+
+function normalizeTrackUrl(url) {
+  if (!url || typeof url !== "string") return "";
+  if (/^(https?:)?\/\//i.test(url) || url.startsWith("data:")) return url;
+  if (url.startsWith("/")) {
+    const base = SITE_BASE_PATH.endsWith("/") ? SITE_BASE_PATH.slice(0, -1) : SITE_BASE_PATH;
+    return `${base}${url}`;
+  }
+  return url;
+}
+
+function getPageMusicConfig() {
+  const node = document.getElementById("page-music-player-config");
+  if (!node) return null;
+
+  try {
+    const raw = JSON.parse(node.textContent || "{}");
+    if (!raw || raw.enabled === false) return null;
+
+    const tracks = Array.isArray(raw.tracks)
+      ? raw.tracks
+          .map((track) => ({
+            name: track.name || "Untitled",
+            artist: track.artist || "Unknown",
+            url: normalizeTrackUrl(track.url),
+            cover: normalizeTrackUrl(track.cover || "")
+          }))
+          .filter((track) => track.url)
+      : [];
+
+    if (!tracks.length) return null;
+
+    const volume = Number(raw.volume);
+    return {
+      mode: raw.mode === "floating" ? "floating" : "embed",
+      position: raw.position === "bottom" ? "bottom" : "top",
+      mini: Boolean(raw.mini),
+      autoplay: Boolean(raw.autoplay),
+      theme: raw.theme || "#ff7a18",
+      loop: raw.loop || "all",
+      order: raw.order || "list",
+      preload: raw.preload || "none",
+      volume: Number.isFinite(volume) ? Math.min(1, Math.max(0, volume)) : 0.6,
+      listFolded: raw.list_folded !== false,
+      listMaxHeight: Number(raw.list_max_height) || 220,
+      tracks
+    };
+  } catch (error) {
+    console.warn("[music-player] Invalid page config JSON.");
+    return null;
+  }
 }
 
 function applyReadingMode(enabled, button) {
@@ -316,5 +394,5 @@ document.addEventListener("DOMContentLoaded", function () {
   initReadingModeToggle();
   initSearchPlus();
   initAnalyticsDashboard();
-  setTimeout(initMusicPlayer, 1000);
+  initMusicPlayer();
 });

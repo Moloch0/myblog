@@ -1,0 +1,6 @@
+{% include custom-head.html %}
+{% if page.music_player %}
+  <script id="page-music-player-config" type="application/json">
+    {{ page.music_player | jsonify }}
+  </script>
+{% endif %}
