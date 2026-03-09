@@ -72,7 +72,7 @@ main() {
 
   # test (optional: htmlproofer is in :test group)
   if "$_ruby_bin" -S htmlproofer --version >/dev/null 2>&1; then
-    "$_ruby_bin" -S htmlproofer "$SITE_DIR" \
+    "$_ruby_bin" -S htmlproofer "$SITE_DIR$_baseurl" \
       --disable-external \
       --ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
   else
