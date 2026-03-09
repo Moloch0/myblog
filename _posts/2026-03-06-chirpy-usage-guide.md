@@ -3,7 +3,7 @@ title: "Chirpy 博客使用指南"
 description: "基于 cotes2020/chirpy-starter 的个人博客，从本地写作到 GitHub Pages 部署的完整流程。"
 date: 2026-03-06 00:00:00 +0800
 categories: [blog, guide]
-tags: [chirpy, jekyll, github-pages, pre-commit]
+tags: [chirpy, jekyll, github-pages, workflow]
 toc: true
 ---
 

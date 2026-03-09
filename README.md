@@ -14,10 +14,8 @@
 ## 仓库结构
 
 - `_posts/`: 已发布文章
-- `_writing/`: 临时写作输入目录（由同步脚本消费）
-- `tools/`: 本地开发与同步脚本
+- `tools/`: 本地开发脚本
 - `_includes/`, `assets/`: 主题扩展与前端资源
-- `.githooks/`: pre-commit 钩子（自动同步 `_writing`）
 - `docs/`: 工程导航文档（非人类核心标准）
 
 ## 本地开发
@@ -34,21 +32,14 @@ bundle config unset without
 bundle install
 ```
 
-## 写作同步流
+## 写作方式
 
-1. 在 `_writing/*.md` 写稿
-2. `git commit` 触发 `.githooks/pre-commit`
-3. 执行 `python tools/sync_posts.py`
-4. 文章生成到 `_posts/`，源文件按配置删除
-
-初始化（每个 clone 一次）：
-
-```bash
-git config core.hooksPath .githooks
-```
+1. 直接在 `_posts/*.md` 写稿并维护
+2. 提交前确认 Front Matter 至少包含 `title`、`date`
+3. `git commit && git push` 发布变更
 
 ## 参考
 
 - 工程导航：`docs/REPO-OPERATIONS.md`
-- Feature 概览（关联文档）：`_writing/FEATURES.md`
+- Feature 概览（关联文档）：`_posts/2026-03-09-features.md`
 - Chirpy 官方文档：<https://github.com/cotes2020/jekyll-theme-chirpy/wiki>

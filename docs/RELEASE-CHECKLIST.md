@@ -9,7 +9,7 @@
 - [ ] 未误改关键配置：`lang`、`baseurl`、评论与统计配置
 - [ ] 未引入构建产物：`_site/`、`.jekyll-cache/`
 - [ ] 未引入缓存文件：`__pycache__/`、`*.pyc`
-- [ ] 若涉及文章同步，已按 `_writing -> sync_posts.py -> _posts` 流程执行
+- [ ] 新增/修改文章已直接在 `_posts/` 维护
 - [ ] 新增文章 Front Matter 完整（至少 `title`、`date`）
 - [ ] `git diff` 已人工审阅，确认无意外删除
 

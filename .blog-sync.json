@@ -1,9 +1,0 @@
-{
-  "source_dir": "_writing",
-  "target_dir": "_posts",
-  "timezone": "+08:00",
-  "pattern": "*.md",
-  "track_sync_source": true,
-  "delete_source_after_sync": true,
-  "remove_stale_synced_posts": false
-}

@@ -6,8 +6,6 @@
 
 - 核心规范（唯一）：`_posts/2026-03-09-config-zh-cn.md`
 - 站点配置：`_config.yml`
-- 同步脚本：`tools/sync_posts.py`
-- 钩子入口：`.githooks/pre-commit`
 - 页面部署：`.github/workflows/pages-deploy.yml`
 - 任务模板：`docs/TASK-TEMPLATE.md`
 - 发布检查单：`docs/RELEASE-CHECKLIST.md`
@@ -17,7 +15,6 @@
 ```bash
 bash tools/run.sh
 bash tools/test.sh
-python tools/sync_posts.py
 ```
 
 ## 3) 提交前检查

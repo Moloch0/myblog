@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-set -eu
-
-# NOTE:
-# This hook syncs `_writing/*.md` into `_posts/`.
-# With current config (`delete_source_after_sync: true`), source files in
-# `_writing` will be deleted after a successful sync on commit.
-python tools/sync_posts.py
-git add _posts _writing
