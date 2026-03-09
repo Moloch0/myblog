@@ -3,6 +3,31 @@
 {% assign previous = site.data.locales[include.lang].post.button.previous %}
 {% assign next = site.data.locales[include.lang].post.button.next %}
 
+{% if page.last_modified_at or page.changelog %}
+  <section class="post-maintenance mb-4" aria-label="Post Maintenance">
+    {% if page.last_modified_at %}
+      <div class="text-muted small mb-2">
+        Last updated: {{ page.last_modified_at | date: "%Y-%m-%d %H:%M %z" }}
+      </div>
+    {% endif %}
+
+    {% if page.changelog %}
+      <details class="post-changelog">
+        <summary>Change log</summary>
+        <ul class="mb-0 mt-2">
+          {% for item in page.changelog %}
+            {% if item.date and item.note %}
+              <li><code>{{ item.date }}</code> - {{ item.note }}</li>
+            {% else %}
+              <li>{{ item }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </details>
+    {% endif %}
+  </section>
+{% endif %}
+
 {% if page.series %}
   {% assign series_posts = site.posts | where: "series", page.series | sort: "date" %}
   {% assign current_idx = -1 %}
@@ -20,8 +45,21 @@
     {% assign series_prev = series_posts[series_prev_idx] %}
     {% assign series_next = series_posts[series_next_idx] %}
 
-    <section class="series-navigation mb-4" aria-label="Series Navigation">
-      <div class="text-muted small mb-2">Series: {{ page.series }}</div>
+    <section class="series-navigation mb-4" aria-label="Series Navigation and TOC">
+      <div class="text-muted small mb-2">Series: {{ page.series }} ({{ series_posts.size }} posts)</div>
+
+      <ol class="series-toc mb-3">
+        {% for post in series_posts %}
+          <li>
+            {% if post.url == page.url %}
+              <strong>{{ post.title }}</strong>
+            {% else %}
+              <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+
       <div class="post-navigation d-flex justify-content-between">
         {% if series_prev %}
           <a href="{{ site.baseurl }}{{ series_prev.url }}" class="btn btn-outline-secondary" aria-label="Previous in series">
@@ -45,6 +83,50 @@
       </div>
     </section>
   {% endif %}
+{% endif %}
+
+{% assign related_limit = 5 %}
+{% assign related_count = 0 %}
+{% assign related_html = "" %}
+
+{% for post in site.posts %}
+  {% if post.url != page.url and related_count < related_limit %}
+    {% assign matched = false %}
+
+    {% if page.tags and post.tags %}
+      {% for tag in page.tags %}
+        {% if post.tags contains tag %}
+          {% assign matched = true %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if matched == false and page.categories and post.categories %}
+      {% for category in page.categories %}
+        {% if post.categories contains category %}
+          {% assign matched = true %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if matched %}
+      {% capture related_html %}
+{{ related_html }}<li><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+      {% endcapture %}
+      {% assign related_count = related_count | plus: 1 %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% if related_count > 0 %}
+  <section class="related-posts mb-4" aria-label="Related Posts">
+    <div class="text-muted small mb-2">Related posts</div>
+    <ul class="mb-0">
+      {{ related_html }}
+    </ul>
+  </section>
 {% endif %}
 
 <nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation">
