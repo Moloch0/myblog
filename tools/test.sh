@@ -50,6 +50,25 @@ read_baseurl() {
   fi
 }
 
+ensure_windows_runtime_path() {
+  if [[ "${OS:-}" != "Windows_NT" ]]; then
+    return 0
+  fi
+
+  local ruby_path ruby_dir runtime_dir
+  ruby_path="$(command -v "$_ruby_bin" 2>/dev/null || true)"
+  if [[ -z "$ruby_path" ]]; then
+    return 0
+  fi
+
+  ruby_dir="$(cd "$(dirname "$ruby_path")" && pwd)"
+  runtime_dir="$ruby_dir/../msys64/ucrt64/bin"
+
+  if [[ -d "$runtime_dir" && ":$PATH:" != *":$runtime_dir:"* ]]; then
+    export PATH="$runtime_dir:$PATH"
+  fi
+}
+
 main() {
   if ! command -v "$_ruby_bin" >/dev/null 2>&1; then
     if command -v ruby.exe >/dev/null 2>&1; then
@@ -59,6 +78,8 @@ main() {
       exit 1
     fi
   fi
+
+  ensure_windows_runtime_path
 
   # clean up
   if [[ -d $SITE_DIR ]]; then
