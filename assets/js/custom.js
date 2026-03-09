@@ -1,13 +1,18 @@
-// Live2D 看板娘初始化
+const LIVE2D_WIDGET_URL =
+  'https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@v0.9.0/autoload.js';
+const MEDIUM_ZOOM_URL =
+  'https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js';
+const APLAYER_CSS_URL =
+  'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css';
+const APLAYER_JS_URL =
+  'https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js';
+
 function initLive2D() {
-  // 使用 Live2D Widget 库
   const script = document.createElement('script');
-  script.src =
-    'https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js';
+  script.src = LIVE2D_WIDGET_URL;
   document.head.appendChild(script);
 }
 
-// 阅读进度条
 function initReadingProgress() {
   const progressBar = document.createElement('div');
   progressBar.id = 'reading-progress-bar';
@@ -25,19 +30,19 @@ function initReadingProgress() {
 
   window.addEventListener('scroll', () => {
     const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight - windowHeight;
+    const documentHeight = Math.max(
+      document.documentElement.scrollHeight - windowHeight,
+      1
+    );
     const scrolled = window.scrollY;
-    const progress = (scrolled / documentHeight) * 100;
+    const progress = Math.min(100, Math.max(0, (scrolled / documentHeight) * 100));
     progressBar.style.width = progress + '%';
   });
 }
 
-// 图片灯箱功能
 function initImageLightbox() {
-  // 使用 Medium Zoom 库
   const script = document.createElement('script');
-  script.src =
-    'https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js';
+  script.src = MEDIUM_ZOOM_URL;
   script.onload = function () {
     mediumZoom('article img', {
       margin: 24,
@@ -48,9 +53,7 @@ function initImageLightbox() {
   document.head.appendChild(script);
 }
 
-// 音乐播放器
 function initMusicPlayer() {
-  // 创建播放器容器
   const playerContainer = document.createElement('div');
   playerContainer.id = 'music-player';
   playerContainer.style.cssText = `
@@ -62,19 +65,15 @@ function initMusicPlayer() {
   `;
   document.body.appendChild(playerContainer);
 
-  // 加载 APlayer CSS
   const aplcss = document.createElement('link');
   aplcss.rel = 'stylesheet';
-  aplcss.href =
-    'https://cdn.jsdelivr.net/npm/aplayer@latest/dist/APlayer.min.css';
+  aplcss.href = APLAYER_CSS_URL;
   document.head.appendChild(aplcss);
 
-  // 加载 APlayer JS
   const aplscript = document.createElement('script');
-  aplscript.src =
-    'https://cdn.jsdelivr.net/npm/aplayer@latest/dist/APlayer.min.js';
+  aplscript.src = APLAYER_JS_URL;
   aplscript.onload = function () {
-    const ap = new APlayer({
+    new APlayer({
       container: document.getElementById('music-player'),
       mini: true,
       autoplay: false,
@@ -114,17 +113,9 @@ function initMusicPlayer() {
   document.head.appendChild(aplscript);
 }
 
-// 页面加载完成后初始化所有功能
 document.addEventListener('DOMContentLoaded', function () {
-  // 初始化 Live2D
   initLive2D();
-
-  // 初始化阅读进度条
   initReadingProgress();
-
-  // 初始化图片灯箱
   initImageLightbox();
-
-  // 初始化音乐播放器（延迟加载避免阻塞页面）
   setTimeout(initMusicPlayer, 1000);
 });

@@ -29,6 +29,16 @@ latest version of the **Chirpy** theme and the [CD][CD] workflow to here, so tha
 
 Check out the [theme's docs](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
 
+### Local build commands
+
+In some Windows Ruby setups, `bundle exec` may fail unexpectedly.
+Use the project scripts (or `ruby -S`) for local development:
+
+```bash
+bash tools/run.sh
+bash tools/test.sh
+```
+
 ## Local Writing Auto-Sync (pre-commit)
 
 This repo includes a pre-commit workflow that syncs markdown files from `_writing/` into Jekyll `_posts/`.

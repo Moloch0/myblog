@@ -3,8 +3,9 @@
 # Run jekyll serve and then launch the site
 
 prod=false
-command="bundle exec jekyll s -l"
+command=""
 host="127.0.0.1"
+ruby_bin="ruby"
 
 help() {
   echo "Usage:"
@@ -40,6 +41,16 @@ while (($#)); do
   esac
 done
 
+if ! command -v "$ruby_bin" >/dev/null 2>&1; then
+  if command -v ruby.exe >/dev/null 2>&1; then
+    ruby_bin="ruby.exe"
+  else
+    echo "> Ruby not found in PATH"
+    exit 1
+  fi
+fi
+
+command="$ruby_bin -S jekyll s -l"
 command="$command -H $host"
 
 if $prod; then
