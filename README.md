@@ -39,6 +39,19 @@ bash tools/run.sh
 bash tools/test.sh
 ```
 
+If `bash tools/test.sh` reports `htmlproofer not found`, install the test gems:
+
+```bash
+bundle config unset without
+bundle install
+```
+
+You can skip link checking once with:
+
+```bash
+SKIP_HTMLPROOFER=1 bash tools/test.sh
+```
+
 ## Local Writing Auto-Sync (pre-commit)
 
 This repo includes a pre-commit workflow that syncs markdown files from `_writing/` into Jekyll `_posts/`.

@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import hashlib
 import subprocess
 import sys
 import unicodedata
@@ -53,11 +54,22 @@ def parse_timezone(tz_str: str) -> timezone:
 
 
 def slugify(text: str) -> str:
-    text = unicodedata.normalize("NFKD", text)
-    text = text.encode("ascii", "ignore").decode("ascii")
-    text = text.lower()
-    text = re.sub(r"[^a-z0-9]+", "-", text).strip("-")
-    return text or "post"
+    text = unicodedata.normalize("NFKC", text).lower().strip()
+    text = re.sub(r"\s+", "-", text)
+    text = re.sub(r"[^\w-]+", "-", text, flags=re.UNICODE)
+    text = re.sub(r"-{2,}", "-", text).strip("-_")
+    return text
+
+
+def source_hash(sync_source: str) -> str:
+    return hashlib.sha1(sync_source.encode("utf-8")).hexdigest()[:8]
+
+
+def get_sync_source_from_content(content: str) -> str | None:
+    match = SYNC_SOURCE_RE.search(content)
+    if not match:
+        return None
+    return match.group(1)
 
 
 def parse_front_matter(content: str) -> tuple[str | None, str, str]:
@@ -201,9 +213,11 @@ def main() -> int:
             dt = datetime.fromtimestamp(source.stat().st_mtime, tz=tz)
 
         date_str = format_jekyll_date(dt)
-        slug = slugify(title)
-        target_name = f"{dt.strftime('%Y-%m-%d')}-{slug}.md"
         sync_source = source.relative_to(REPO_ROOT).as_posix()
+        slug = slugify(title)
+        if not slug:
+            slug = f"post-{source_hash(sync_source)}"
+        target_name = f"{dt.strftime('%Y-%m-%d')}-{slug}.md"
         target_path = target_dir / target_name
 
         new_content = ensure_front_matter(
@@ -223,6 +237,21 @@ def main() -> int:
         old_content = None
         if target_path.exists():
             old_content = target_path.read_text(encoding="utf-8")
+        if old_content is not None and old_content != new_content:
+            existing_sync_source = get_sync_source_from_content(old_content)
+            has_collision = existing_sync_source != sync_source
+            if existing_sync_source is None:
+                has_collision = True
+            if has_collision:
+                target_name = (
+                    f"{dt.strftime('%Y-%m-%d')}-{slug}-{source_hash(sync_source)}.md"
+                )
+                target_path = target_dir / target_name
+                old_content = (
+                    target_path.read_text(encoding="utf-8")
+                    if target_path.exists()
+                    else None
+                )
         if old_content != new_content:
             with target_path.open("w", encoding="utf-8", newline="\n") as f:
                 f.write(new_content)

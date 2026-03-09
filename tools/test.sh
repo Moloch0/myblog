@@ -14,6 +14,7 @@ _config="_config.yml"
 
 _baseurl=""
 _ruby_bin="ruby"
+_skip_htmlproofer="${SKIP_HTMLPROOFER:-0}"
 
 help() {
   echo "Build and test the site content"
@@ -70,13 +71,21 @@ main() {
   JEKYLL_ENV=production "$_ruby_bin" -S jekyll b \
     -d "$SITE_DIR$_baseurl" -c "$_config"
 
-  # test (optional: htmlproofer is in :test group)
+  if [[ $_skip_htmlproofer == "1" ]]; then
+    echo "SKIP_HTMLPROOFER=1, skip link checking"
+    return 0
+  fi
+
+  # link test
   if "$_ruby_bin" -S htmlproofer --version >/dev/null 2>&1; then
     "$_ruby_bin" -S htmlproofer "$SITE_DIR$_baseurl" \
       --disable-external \
       --ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
   else
-    echo "htmlproofer not found, skip link checking"
+    echo "htmlproofer not found."
+    echo "Fix with: bundle config unset without && bundle install"
+    echo "Or skip once: SKIP_HTMLPROOFER=1 bash tools/test.sh"
+    exit 1
   fi
 }
 
