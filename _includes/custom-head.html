@@ -1,0 +1,32 @@
+<!-- 自定义功能增强 -->
+<script defer src="{{ '/assets/js/custom.js' | relative_url }}"></script>
+
+<!-- Live2D 看板娘样式调整 -->
+<style>
+  #waifu {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+  }
+  
+  /* 移动端隐藏看板娘和音乐播放器 */
+  @media (max-width: 768px) {
+    #waifu,
+    #music-player {
+      display: none !important;
+    }
+  }
+  
+  /* 音乐播放器样式微调 */
+  #music-player {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  /* 阅读进度条在侧边栏打开时调整 */
+  #reading-progress-bar {
+    transition: all 0.3s ease;
+  }
+</style>
