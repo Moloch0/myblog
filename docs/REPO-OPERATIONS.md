@@ -17,6 +17,20 @@ bash tools/run.sh
 bash tools/test.sh
 ```
 
+Windows 手动预览建议使用：
+
+```bat
+cd /d d:\360MoveData\Users\罗力恒\Desktop\study\blog
+set RUBYOPT=
+jekyll serve --host 127.0.0.1 --port 4000
+```
+
+补充约束：
+
+- 避免在 Windows 上用 `bundle exec jekyll serve`，当前环境可能被 `RUBYOPT` 污染。
+- 避免使用 `jekyll serve --detach`，Windows 上会因 `fork()` 不可用而失败。
+- 若 PowerShell 启动时报 `conda` 的编码错误，改用 `cmd` 或 `PowerShell -NoProfile`。
+
 ## 3) 提交前检查
 
 - 未提交 `_site/`、`.jekyll-cache/`、`__pycache__/`、`*.pyc`

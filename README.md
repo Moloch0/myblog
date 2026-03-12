@@ -25,6 +25,21 @@ bash tools/run.sh
 bash tools/test.sh
 ```
 
+Windows 本地预览如果遇到 Ruby/Conda 环境污染，优先使用 `cmd` 而不是 `bundle exec`:
+
+```bat
+cd /d d:\360MoveData\Users\罗力恒\Desktop\study\blog
+set RUBYOPT=
+jekyll serve --host 127.0.0.1 --port 4000
+```
+
+经验总结：
+
+- `bundle exec jekyll ...` 在当前机器上会触发 `RUBYOPT: -F` 报错，但 `jekyll ...` 配合 `set RUBYOPT=` 可以正常运行。
+- 新开 `PowerShell` 窗口可能会被 `conda` 的 profile 初始化打断，并出现 `UnicodeEncodeError`；排障时优先用 `PowerShell -NoProfile` 或直接用 `cmd`。
+- Windows 下不要使用 `jekyll serve --detach`，Jekyll 4.4.1 会因为 `fork()` 未实现而失败。
+- 已验证可工作的地址是 `http://127.0.0.1:4000/myblog/`。
+
 如果 `htmlproofer` 缺失：
 
 ```bash
